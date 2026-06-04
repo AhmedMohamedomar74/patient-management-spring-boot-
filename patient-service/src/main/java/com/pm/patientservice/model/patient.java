@@ -9,11 +9,6 @@ import java.util.UUID;
 
 @Entity
 public class patient {
-    protected patient()
-    {
-
-    }
-
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Id
     private UUID id;

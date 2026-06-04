@@ -1,5 +1,6 @@
 package com.pm.patientservice.service;
 
+import com.pm.patientservice.dto.PatientRequestDto;
 import com.pm.patientservice.dto.PatientResponseDto;
 import com.pm.patientservice.mapper.PatientMapper;
 import com.pm.patientservice.model.patient;
@@ -22,5 +23,10 @@ public class PatientService {
 
         return patients.stream().map(PatientMapper::toDto
         ).toList();
+    }
+
+    public PatientResponseDto addPatient(PatientRequestDto PatientRequestDto)
+    {
+        return PatientMapper.toDto(patientRepositry.save(PatientMapper.toModel(PatientRequestDto)));
     }
 }
