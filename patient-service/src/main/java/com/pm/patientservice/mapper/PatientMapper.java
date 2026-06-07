@@ -18,6 +18,7 @@ public class PatientMapper {
         patientResponseDto.setEmail(patient.getEmail());
         patientResponseDto.setId(patient.getId().toString());
         patientResponseDto.setName(patient.getName());
+        patientResponseDto.setDateOfBirth(patient.getDateOfBirth().format(DATE_FORMATTER));
         return patientResponseDto;
     }
     public static patient toModel(PatientRequestDto patientRequestDto)

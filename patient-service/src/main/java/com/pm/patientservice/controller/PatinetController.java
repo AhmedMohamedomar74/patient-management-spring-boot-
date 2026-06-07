@@ -38,4 +38,19 @@ public class PatinetController {
         PatientResponseDto response = patientService.updatePatient(requestDto ,id);
         return ResponseEntity.ok(response);
     }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<PatientResponseDto> getPatient(@PathVariable UUID id)
+    {
+        PatientResponseDto response = patientService.getPatient(id);
+        return ResponseEntity.ok(response);
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<PatientResponseDto> deletePatient(@PathVariable UUID id)
+    {
+        patientService.deletePatient(id);
+        return ResponseEntity.noContent().build();
+    }
+
 }
