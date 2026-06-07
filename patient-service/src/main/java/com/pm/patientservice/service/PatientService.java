@@ -2,13 +2,16 @@ package com.pm.patientservice.service;
 
 import com.pm.patientservice.dto.PatientRequestDto;
 import com.pm.patientservice.dto.PatientResponseDto;
+import com.pm.patientservice.dto.PatientUpdateRequestDto;
 import com.pm.patientservice.exception.EmailAreadyExistException;
+import com.pm.patientservice.exception.PatientNotFoundException;
 import com.pm.patientservice.mapper.PatientMapper;
 import com.pm.patientservice.model.patient;
 import com.pm.patientservice.repostiry.PatientRepositry;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.UUID;
 
 @Service
 public class PatientService {
@@ -18,20 +21,31 @@ public class PatientService {
         this.patientRepositry = patientRepositry;
     }
 
-    public List<PatientResponseDto> ListAllPatient()
-    {
+    public List<PatientResponseDto> listAllPatients() {
         List<patient> patients = patientRepositry.findAll();
 
         return patients.stream().map(PatientMapper::toDto
         ).toList();
     }
 
-    public PatientResponseDto addPatient(PatientRequestDto PatientRequestDto)
-    {
-        if (patientRepositry.existsByEmail(PatientRequestDto.getEmail()))
-        {
-            throw new EmailAreadyExistException("Email is already exist {}"+PatientRequestDto.getEmail());
+    public PatientResponseDto addPatient(PatientRequestDto requestDto) {
+        if (patientRepositry.existsByEmail(requestDto.getEmail())) {
+            throw new EmailAreadyExistException("Email is already exist " + requestDto.getEmail());
         }
-        return PatientMapper.toDto(patientRepositry.save(PatientMapper.toModel(PatientRequestDto)));
+        return PatientMapper.toDto(patientRepositry.save(PatientMapper.toModel(requestDto)));
+    }
+
+    public PatientResponseDto updatePatient(PatientUpdateRequestDto requestDto, UUID id) {
+        patient patient = patientRepositry.findById(id).orElseThrow(() -> new PatientNotFoundException("patient not found with id " + id));
+
+        if (requestDto.getEmail() != null && !patient.getEmail().equals(requestDto.getEmail())
+                && patientRepositry.existsByEmail(requestDto.getEmail())) {
+            throw new EmailAreadyExistException("Email is already exist " + requestDto.getEmail());
+        }
+
+        PatientMapper.updatePatient(patient, requestDto);
+        patientRepositry.save(patient);
+
+        return PatientMapper.toDto(patient);
     }
 }
