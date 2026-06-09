@@ -28,5 +28,17 @@ services:
       db:
         condition: service_healthy
 
+
+  billing-service:
+    build: ./Billing-Service
+    ports:
+      - "4010:4000"
+      - "8010:8000"
+    environment:
+      SPRING_PROFILES_ACTIVE: prod
+    depends_on:
+      db:
+        condition: service_healthy
+
 volumes:
   postgres_data:
